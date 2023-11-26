@@ -2,6 +2,7 @@
 Overview
 
 This dynamic inventory script is designed to fetch host information from a specified database and generate an Ansible inventory dynamically. It's particularly useful for environments where hosts and their configurations are stored in a database and need to be retrieved for Ansible automation tasks. This script is compatible with Ansible Tower or AWX.
+
 Requirements
 
     Ansible Tower or AWX environment for deployment.
