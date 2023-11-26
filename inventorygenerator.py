@@ -2,12 +2,17 @@
 import json
 import psycopg2
 import os
-import re
 
 def fetch_hosts_from_db():
+    try:
+        # Each of these variables should be defined in a custom credential in Tower/AWX to securely store it. DO NOT HARD CODE IT HERE, you will put your company at risk.
+        conn = psycopg2.connect(dbname=os.environ.get('DB_NAME'), user=os.environ.get('DB_USERNAME'), 
+                                password=os.environ.get('DB_PASSWORD'), host=os.environ.get('DB_HOSTNAME'), 
+                                port=os.environ.get('DB_PORT'))
+    except psycopg2.OperationalError as e:
+        print(f"Database connection failed: {e}")
+        return []
 
-    # Each of these variables should be defined in a custom credential in Tower/AWX to securely store it. DO NOT HARD CODE IT HERE, you will put your company at risk.
-    conn = psycopg2.connect(dbname=os.environ.get('DB_NAME'), user=os.environ.get('DB_USERNAME'), password=os.environ.get('DB_PASSWORD'). host=os.environ.get('DB_HOSTNAME'), port=os.environ.get('DB_PORT')
     cursor = conn.cursor()
 
     # Query used, stripped version with the needed info in it. In my case I am reaching out to a Database that a network team manages and reading the tags of each server, only returning the servers that have the specific tags.
@@ -48,9 +53,6 @@ def fetch_hosts_from_db():
     # Process the results and extract the TEAMNAME tag for each host
     json_like_data = []
 
-    # Pattern to match tag value (TEAMNAME)
-    pattern = r'"tag":(TEAMNAME-[^\"]+)"'
-
     for row in sql_data:
         tags_raw = row[3] if row[3] else {}
         app_region = None
@@ -82,7 +84,7 @@ def fetch_hosts_from_db():
            "Name": row[0],
            "ObjectId": row[1],
            "ObjectName": row[2],
-           "APP-REGION": app-region
+           "app_region": app_region
        })
 
     return json_like_data
@@ -92,7 +94,7 @@ def generate_inventory(hosts):
 
     # Here is where I would define the global variables I would like servers to have when imported into ansible
     for host in hosts:
-        app_region = host.get("APP-REGION")
+        app_region = host.get("app_region")
         hostname = host.get("ObjectName")
 
         # Then I start separating them by environment based on what is present in the hostname. You could do it via the group or whatever standardization is present so long as that was standardized data you were pulling from the query and it is definined.
@@ -152,6 +154,6 @@ def generate_inventory(hosts):
     return inventory
 
 if __name__ == "__main__":
-    hosts = fetch_hosts_from_api()
+    hosts = fetch_hosts_from_db()
     inventory = generate_inventory(hosts)
     print(json.dumps(inventory))
