@@ -12,7 +12,6 @@ Requirements
 
 Setup and Configuration
 
-    Install psycopg2 Library:
     Ensure psycopg2 is installed in your execution environment used on Ansible Tower/AWX.
 
     Environment Variables:
