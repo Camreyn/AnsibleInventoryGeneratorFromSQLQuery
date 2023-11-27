@@ -147,7 +147,7 @@ def generate_inventory(hosts):
         app_region = host.get("app_region")
         hostname = host.get("ObjectName")
 
-        # Then I start separating them by environment based on what is present in the hostname.
+        # Sort environment based on what is present in the hostname.
         if any(
             test_env in app_region or "TEST" in hostname
             for test_env in ["DEV", "TEST1", "TEST2"]
@@ -155,13 +155,14 @@ def generate_inventory(hosts):
             groups = []
             # Change job_name to whatever you use for Prometheus.
             job_name = "generic-prometheus-job-name"
-            # connected_hosts is a silly variable but it can allow for some automation regarding documenting what connects to what.
+            # connected_hosts is a silly variable, used for documenting what connects to what.
             connected_hosts = []
             ansible_control_hostname = "MY-ANSIBLE-SERVER.COM"
             grafana_hostname = "MY-GRAFANA-SERVER.COM"
 
-            # Further sorting of environments, while not the cleanest way to do it, it is really easy to write out.
+            # Further sorting of environments.
             if "DEV" in hostname:
+                env_name = 'DEV_ENVIRONMENT'
                 groups.extend(["DEV"])
                 if "HTTP" or "WEB" in hostname:
                     groups.extend(["WEB", "WEB_PATCHING"])
@@ -169,6 +170,7 @@ def generate_inventory(hosts):
                     groups.extend(["APP", "TOMCAT_PATCHING"])
 
             elif "TEST1" in hostname:
+                env_name = 'TEST1_ENVIRONMENT'
                 groups.extend(["TEST1"])
                 if "HTTP" or "WEB" in hostname:
                     groups.extend(["WEB", "WEB_PATCHING"])
@@ -176,6 +178,7 @@ def generate_inventory(hosts):
                     groups.extend(["APP", "TOMCAT_PATCHING"])
 
             elif "TEST2" in hostname:
+                env_name = 'TEST2_ENVIRONMENT'
                 groups.extend(["TEST2"])
                 if "HTTP" or "WEB" in hostname:
                     groups.extend(["WEB", "WEB_PATCHING"])
