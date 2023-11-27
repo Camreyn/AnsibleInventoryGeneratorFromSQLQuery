@@ -6,7 +6,7 @@ dynamically. The script includes functions to fetch host
 data based on specific tags and process this data into a
 structured inventory format that can be used by Ansible
 for automation tasks. It is intended for use with
-Ansible Tower or AWX environments.
+Ansible Tower/AWX environments.
 """
 import os
 import json
