@@ -189,8 +189,6 @@ def generate_inventory(hosts):
             groups = "UNKNOWN"
             job_name = "generic-metrics"
             connected_hosts = []
-            ansible_control_hostname = "UNKNOWN"
-            grafana_hostname = "UNKNOWN"
 
         for group in groups:
             if group not in inventory:
