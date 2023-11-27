@@ -98,7 +98,7 @@ def generate_inventory(hosts):
         hostname = host.get("ObjectName")
 
         # Then I start separating them by environment based on what is present in the hostname. You could do it via the group or whatever standardization is present so long as that was standardized data you were pulling from the query and it is definined.
-        if any(test_env) in app_region or 'TEST' in hostname for test_env in ['DEV', 'TEST1', 'TEST2']):
+        if any(test_env in app_region or 'TEST' in hostname for test_env in ['DEV', 'TEST1', 'TEST2']):
             groups = []
             # Change job_name to whatever you use for Prometheus, otherwise the job_name variable can be cleared out
             job_name = 'generic-prometheus-job-name'
