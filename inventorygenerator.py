@@ -90,7 +90,7 @@ def fetch_hosts_from_db():
     return json_like_data
 
 def generate_inventory(hosts):
-    inventory = {'_meta': {hostvars': {}}}
+    inventory = {'_meta': {'hostvars': {}}}
 
     # Here is where I would define the global variables I would like servers to have when imported into ansible
     for host in hosts:
