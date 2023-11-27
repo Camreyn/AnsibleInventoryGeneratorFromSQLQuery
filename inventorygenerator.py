@@ -1,12 +1,27 @@
 #!/usr/bin/env python
+"""
+This module is designed to fetch host information from a PostgreSQL database and generate an Ansible inventory dynamically. 
+The script includes functions to fetch host data based on specific tags and process this data into a structured inventory format 
+that can be used by Ansible for automation tasks. It is intended for use with Ansible Tower or AWX environments.
+"""
 import os
 import json
 import psycopg2
 
 
 def fetch_hosts_from_db():
+    """
+    Fetch host data from a PostgreSQL database.
+
+    This function connects to a PostgreSQL database using credentials stored in environment variables.
+    It then executes a SQL query to retrieve data about hosts, specifically those with certain tags.
+    The function returns a list of dictionaries, each containing information about a host.
+
+    Returns:
+        list of dict: A list of dictionaries, each representing a host with specific tags.
+    """
     try:
-        # Each of these variables should be defined in a custom credential in Tower/AWX to securely store it. DO NOT HARD CODE IT HERE, you will put your company at risk.
+        # Variables should be defined in a custom credential in Tower/AWX to securely store it.
         conn = psycopg2.connect(
             dbname=os.environ.get("DB_NAME"),
             user=os.environ.get("DB_USERNAME"),
@@ -20,7 +35,7 @@ def fetch_hosts_from_db():
 
     cursor = conn.cursor()
 
-    # Query used, stripped version with the needed info in it. In my case I am reaching out to a Database that a network team manages and reading the tags of each server, only returning the servers that have the specific tags.
+    # Query used, only returning the servers that have the specific tags.
     query = """
             SELECT
                 d."Name" as "Datasource Name",
@@ -100,27 +115,40 @@ def fetch_hosts_from_db():
 
 
 def generate_inventory(hosts):
+    """
+    Generate an Ansible inventory from a list of hosts.
+
+    This function processes a list of hosts, categorizes them into groups based on their environment
+    (like DEV, TEST1, TEST2), and creates an Ansible inventory. The inventory is a dictionary
+    with hostnames, group assignments, and host variables.
+
+    Parameters:
+        hosts (list of dict): A list of dictionaries where each dictionary contains data about a host.
+
+    Returns:
+        dict: A dictionary representing the Ansible inventory structured for use in Ansible playbooks.
+    """
     inventory = {"_meta": {"hostvars": {}}}
 
-    # Here is where I would define the global variables I would like servers to have when imported into ansible
+    # Define the global variables I would like servers to have when imported into ansible
     for host in hosts:
         app_region = host.get("app_region")
         hostname = host.get("ObjectName")
 
-        # Then I start separating them by environment based on what is present in the hostname. You could do it via the group or whatever standardization is present so long as that was standardized data you were pulling from the query and it is definined.
+        # Then I start separating them by environment based on what is present in the hostname.
         if any(
             test_env in app_region or "TEST" in hostname
             for test_env in ["DEV", "TEST1", "TEST2"]
         ):
             groups = []
-            # Change job_name to whatever you use for Prometheus, otherwise the job_name variable can be cleared out
+            # Change job_name to whatever you use for Prometheus.
             job_name = "generic-prometheus-job-name"
-            # connected_hosts is a silly variable but it can allow for some automation regarding documenting what connects to what...  See my Visio generation script for more info. [[LINK]]
+            # connected_hosts is a silly variable but it can allow for some automation regarding documenting what connects to what.
             connected_hosts = []
             ansible_control_hostname = "MY-ANSIBLE-SERVER.COM"
             grafana_hostname = "MY-GRAFANA-SERVER.COM"
 
-            # Further sorting of environments, while not the cleanest way to do it, it is really easy to write out. But really, you should go back and clean it when you are done.
+            # Further sorting of environments, while not the cleanest way to do it, it is really easy to write out.
             if "DEV" in hostname:
                 groups.extend(["DEV"])
                 if "HTTP" or "WEB" in hostname:
@@ -142,7 +170,7 @@ def generate_inventory(hosts):
                 elif "APP" or "TOMCAT" in hostname:
                     groups.extend(["APP", "TOMCAT_PATCHING"])
 
-        # Lastly, we want to catch anything that didn't work in the filter, so we may update the filter. This is a repetitive process, but necessary to create a strong filter for your ORG.
+        # Lastly, we want to catch anything that didn't work in the filter.
         else:
             hostname = host["ObjectName"]
             groups = "UNKNOWN"
