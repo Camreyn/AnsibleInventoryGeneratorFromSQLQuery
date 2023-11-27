@@ -16,10 +16,3 @@ jobs:
         id: git-check
         run: |
           echo "::set-output name=changed::$(git status --porcelain)"
-          
-      - name: Commit formatting changes
-        run: |
-          git config --global user.name 'Camreyn'
-          git config --global user.email 'fathergestalt@gmail.com'
-          git add -u
-          git commit -m "Apply black formatting"
