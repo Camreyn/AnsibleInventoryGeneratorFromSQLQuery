@@ -1,6 +1,6 @@
 name: Python Formatting
 
-on: [push]
+on: [pre-commit]
 
 jobs:
   black-format:
