@@ -80,12 +80,12 @@ def fetch_hosts_from_db():
                app_region = tag_value
                break # Once we found a match, we exit the loop
               
-       json_like_data.append({
-           "Name": row[0],
-           "ObjectId": row[1],
-           "ObjectName": row[2],
-           "app_region": app_region
-       })
+      json_like_data.append({
+          "Name": row[0],
+          "ObjectId": row[1],
+          "ObjectName": row[2],
+          "app_region": app_region
+      })
 
     return json_like_data
 
