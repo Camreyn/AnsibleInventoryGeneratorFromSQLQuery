@@ -1,6 +1,6 @@
 name: Python Formatting
 
-on: [pull_request]
+on: [push]
 
 jobs:
   black-format:
