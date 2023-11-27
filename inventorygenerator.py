@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 """
-This module is designed to fetch host information from a PostgreSQL database and generate an Ansible inventory dynamically. 
-The script includes functions to fetch host data based on specific tags and process this data into a structured inventory format 
-that can be used by Ansible for automation tasks. It is intended for use with Ansible Tower or AWX environments.
+This module is designed to fetch host information from a
+PostgreSQL database and generate an Ansible inventory
+dynamically. The script includes functions to fetch host
+data based on specific tags and process this data into a
+structured inventory format that can be used by Ansible
+for automation tasks. It is intended for use with
+Ansible Tower or AWX environments.
 """
 import os
 import json
@@ -13,12 +17,16 @@ def fetch_hosts_from_db():
     """
     Fetch host data from a PostgreSQL database.
 
-    This function connects to a PostgreSQL database using credentials stored in environment variables.
-    It then executes a SQL query to retrieve data about hosts, specifically those with certain tags.
-    The function returns a list of dictionaries, each containing information about a host.
+    This function connects to a PostgreSQL database using
+    credentials stored in environment variables. It then
+    executes a SQL query to retrieve data about hosts,
+    specifically those with certain tags. The function
+    returns a list of dictionaries, each containing
+    information about a host.
 
     Returns:
-        list of dict: A list of dictionaries, each representing a host with specific tags.
+        list of dict: A list of dictionaries, each
+        representing a host with specific tags.
     """
     try:
         # Variables should be defined in a custom credential in Tower/AWX to securely store it.
@@ -118,15 +126,19 @@ def generate_inventory(hosts):
     """
     Generate an Ansible inventory from a list of hosts.
 
-    This function processes a list of hosts, categorizes them into groups based on their environment
-    (like DEV, TEST1, TEST2), and creates an Ansible inventory. The inventory is a dictionary
-    with hostnames, group assignments, and host variables.
+    This function processes a list of hosts, categorizes
+    them into groups based on their environment (like
+    DEV, TEST1, TEST2), and creates an Ansible
+    inventory. The inventory is a dictionary with
+    hostnames, group assignments, and host variables.
 
     Parameters:
-        hosts (list of dict): A list of dictionaries where each dictionary contains data about a host.
+        hosts (list of dict): A list of dictionaries where
+        each dictionary contains data about a host.
 
     Returns:
-        dict: A dictionary representing the Ansible inventory structured for use in Ansible playbooks.
+        dict: A dictionary representing the Ansible
+        inventory structured for use in Ansible playbooks.
     """
     inventory = {"_meta": {"hostvars": {}}}
 
