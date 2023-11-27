@@ -157,32 +157,30 @@ def generate_inventory(hosts):
             job_name = "generic-prometheus-job-name"
             # connected_hosts is a silly variable, used for documenting what connects to what.
             connected_hosts = []
-            ansible_control_hostname = "MY-ANSIBLE-SERVER.COM"
-            grafana_hostname = "MY-GRAFANA-SERVER.COM"
 
             # Further sorting of environments.
             if "DEV" in hostname:
                 env_name = 'DEV_ENVIRONMENT'
                 groups.extend(["DEV"])
-                if "HTTP" or "WEB" in hostname:
+                if "HTTP" in hostname or "WEB" in hostname:
                     groups.extend(["WEB", "WEB_PATCHING"])
-                elif "APP" or "TOMCAT" in hostname:
+                elif "APP" in hostname or "TOMCAT" in hostname:
                     groups.extend(["APP", "TOMCAT_PATCHING"])
 
             elif "TEST1" in hostname:
                 env_name = 'TEST1_ENVIRONMENT'
                 groups.extend(["TEST1"])
-                if "HTTP" or "WEB" in hostname:
+                if "HTTP" in hostname or "WEB" in hostname:
                     groups.extend(["WEB", "WEB_PATCHING"])
-                elif "APP" or "TOMCAT" in hostname:
+                elif "APP" in hostname or "TOMCAT" in hostname:
                     groups.extend(["APP", "TOMCAT_PATCHING"])
 
             elif "TEST2" in hostname:
                 env_name = 'TEST2_ENVIRONMENT'
                 groups.extend(["TEST2"])
-                if "HTTP" or "WEB" in hostname:
+                if "HTTP" in hostname or "WEB" in hostname:
                     groups.extend(["WEB", "WEB_PATCHING"])
-                elif "APP" or "TOMCAT" in hostname:
+                elif "APP" in hostname or "TOMCAT" in hostname:
                     groups.extend(["APP", "TOMCAT_PATCHING"])
 
         # Lastly, we want to catch anything that didn't work in the filter.
