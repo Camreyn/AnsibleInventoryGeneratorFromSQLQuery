@@ -8,3 +8,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: psf/black@stable
+      
+      - name: Commit formatting changes
+        run: |
+          git config --global user.name 'Your Name'
+          git config --global user.email 'your-email@example.com'
+          git add -u
+          git commit -m "Apply black formatting"
