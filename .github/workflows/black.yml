@@ -1,4 +1,4 @@
-name: Lint
+name: Fromat via black package
 
 on: [push, pull_request]
 
