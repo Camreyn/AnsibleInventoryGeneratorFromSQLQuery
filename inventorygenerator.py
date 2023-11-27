@@ -3,6 +3,7 @@ import os
 import json
 import psycopg2
 
+
 def fetch_hosts_from_db():
     try:
         # Each of these variables should be defined in a custom credential in Tower/AWX to securely store it. DO NOT HARD CODE IT HERE, you will put your company at risk.
