@@ -1,6 +1,6 @@
 name: Python Formatting
 
-on: [pre-commit]
+on: [pull-request]
 
 jobs:
   black-format:
